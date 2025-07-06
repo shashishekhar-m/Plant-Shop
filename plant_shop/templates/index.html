@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Home - EcoPlant Store{% endblock %}
+
+{% block content %}
+<h2 class="product-count">Showing {{ products|length }} products</h2>
+<div class="product-grid">
+  {% for product in products %}
+    <div class="product-card">
+      <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+      <div class="discount-badge">{{ product.discount }}% OFF</div>
+      <h3>{{ product.name }}</h3>
+      <p class="price">
+        ₹{{ product.price }} <span class="original-price">₹{{ product.original_price }}</span>
+      </p>
+      <div class="tags">
+        {% for tag in product.tags %}
+          <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      <p class="rating">⭐ {{ product.rating }} | {{ product.reviews }}</p>
+      <a href="/product/{{ product.id }}"><button>View</button></a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

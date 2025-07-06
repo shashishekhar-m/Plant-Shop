@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-detail-wrapper">
+  <div class="product-detail">
+
+    <!-- Product Image Section -->
+    <div class="product-image-section">
+      <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+    </div>
+
+    <!-- Product Info Section -->
+    <div class="product-info-section">
+      <h2 class="product-title">{{ product.name }}</h2>
+      <p class="product-rating">⭐ {{ product.rating }} | {{ product.reviews }} Reviews</p>
+
+      <div class="price-section">
+        <span class="product-price">₹{{ product.price }}</span>
+        <span class="original-price">₹{{ product.original_price }}</span>
+       <span class="discount-inline">{{ product.discount }}% OFF</span>
+      </div>
+
+
+      <!-- Description -->
+      <div class="product-description">
+        <p>{{ product.description }}</p>
+      </div>
+
+      <!-- Tags -->
+      <div class="product-tags">
+        {% for tag in product.tags %}
+          <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+
+      <!-- Dropdowns -->
+      <div class="product-options">
+        <label for="size">Select Size:</label>
+        <select id="size">
+          <option>S</option>
+          <option>M</option>
+          <option>L</option>
+        </select>
+
+        <label for="pot-type">Select Pot Type:</label>
+        <select id="pot-type">
+          <option>Plastic</option>
+          <option>Terracotta</option>
+          <option>Ceramic</option>
+        </select>
+      </div>
+
+      <!-- QR Code -->
+      <div class="qr-code-box">
+        <h4>Scan to View Product</h4>
+        <img src="{{ qr_code }}" alt="QR Code for {{ product.name }}">
+      </div>
+
+        <!-- Plantation Video Button -->
+      {% if product.video_url %}
+        <a href="{{ product.video_url }}" class="watch-btn" target="_blank">▶ Watch Plantation Video</a>
+      {% endif %}
+
+      <!-- Add to Cart Button -->
+      <button class="add-to-cart-btn" data-product-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-image="{{ product.image }}">Add to Cart</button>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

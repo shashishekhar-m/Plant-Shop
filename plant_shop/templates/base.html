@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Plant Shop{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <header>
+    <div class="logo">🌿 EcoPlant Store</div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/shop">Shop</a>
+      <a href="/contact">Contact</a>
+      <a href="/cart" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-counter">0</span>
+      </a>
+
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 EcoPlant Store. All rights reserved.</p>
+  </footer>
+ <script>
+  function updateCartCounter() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const count = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    const cartCounter = document.querySelector(".cart-counter");
+    if (cartCounter) {
+      cartCounter.textContent = count;
+      cartCounter.style.display = count > 0 ? "inline-block" : "none";
+    }
+  }
+
+  function setupAddToCartButtons() {
+    const addToCartBtns = document.querySelectorAll(".add-to-cart-btn");
+    addToCartBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-product-id");
+        const name = btn.getAttribute("data-name");
+        const price = parseFloat(btn.getAttribute("data-price"));
+        const image = btn.getAttribute("data-image");
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || {};
+        if (cart[id]) {
+          cart[id].quantity += 1;
+        } else {
+          cart[id] = {
+            name,
+            price,
+            quantity: 1,
+            image
+          };
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCounter();
+        alert("Added to cart!");
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateCartCounter();
+    setupAddToCartButtons();
+  });
+</script>
+
+</body>
+</html>

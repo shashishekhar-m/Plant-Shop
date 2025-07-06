@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="cart-wrapper">
+  <div class="cart-box">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div class="cart-total">
+      <strong>Total:</strong> ₹<span id="total-price">0</span>
+    </div>
+    <button class="checkout-btn">Checkout</button>
+  </div>
+</div>
+
+<script>
+  function loadCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const cartContainer = document.getElementById("cart-items");
+    const totalPriceEl = document.getElementById("total-price");
+    cartContainer.innerHTML = "";
+
+    let total = 0;
+    for (const id in cart) {
+      const item = cart[id];
+      total += item.price * item.quantity;
+      cartContainer.innerHTML += `
+        <div class="cart-item-card">
+          <div class="cart-item-image">
+            <img src="/static/images/${item.image}" alt="${item.name}" class="cart-img">
+          </div>
+          <div class="cart-item-details">
+            <h3>${item.name}</h3>
+            <p class="price">₹${item.price}</p>
+            <div class="quantity-box">
+              <button onclick="updateQuantity(${id}, 1)" class="qty-btn">+</button>
+              <span class="quantity">${item.quantity}</span>
+              <button onclick="updateQuantity(${id}, -1)" class="qty-btn">−</button>
+            </div>
+            <p>Total: ₹${item.price * item.quantity}</p>
+            <button onclick="removeItem(${id})" class="delete-btn">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    totalPriceEl.textContent = total;
+  }
+
+  function updateQuantity(id, change) {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    if (cart[id]) {
+      cart[id].quantity += change;
+      if (cart[id].quantity <= 0) delete cart[id];
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+      updateCartCounter();
+    }
+  }
+
+  function removeItem(id) {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    delete cart[id];
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+    updateCartCounter();
+  }
+
+  function updateCartCounter() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const count = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    const cartCounter = document.querySelector(".cart-counter");
+    if (cartCounter) cartCounter.textContent = count;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadCart();
+    updateCartCounter();
+  });
+</script>
+{% endblock %}
